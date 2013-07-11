@@ -10,7 +10,7 @@
     'disable_iframe' => true, //クリックジャッキング対策として、iframeで決済画面が読み込めないようにするオプション。trueを強く推奨
   
     'do_notify' => true,  //メールアドレスに決済の通知をするか否か
-    'notify_mail' => 'yamamoto+kcc@s0cial-design.com',  //決済時の通知先メールアドレス
+    'notify_mail' => 'from@example.com',  //決済時の通知先メールアドレス
     'notify_subject' => '決済が有りました', //通知メールの件名
     'notify_from' => 'test@example.com',
     'page_title' => 'サンプル決済', //ページのタイトル

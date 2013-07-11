@@ -40,7 +40,7 @@
       if ($config['do_notify'] === true) {
         $body = "{$config['page_title']}にて決済が有りました。\n日時: " . date('Y-m-d H:i:s') . "\n金額: {$_POST['amount']}\n\n詳しくはWebpayの管理画面で確認ください。";
       
-        mb_send_mail($config['notify_mail'], $config['notify_subject'], $body, 'Form: ' . $config['notify_from']);
+        mb_send_mail($config['notify_mail'], $config['notify_subject'], $body, 'From: ' . $config['notify_from']);
       }
       
       include 'tmpl/complete.html';

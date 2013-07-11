@@ -1,0 +1,33 @@
+<?php if (!defined('APP_PATH')) exit; ?>
+<?php include(__DIR__ . '/parts/header.html') ?>
+
+  <label for="card-num">クレジットカード番号(半角数字ハイフン無し)</label>
+  <input type="hidden" value="<?php echo h($_POST['card_num']) ?>" name="card_num" id="card-num">
+  <?php echo trunc_credit_card_num($_POST['card_num']) ?>
+  <label for="card-num">クレジットカード有効期限</label>
+  <?php echo h($_POST['exp_month']) ?>月 <?php echo h($_POST['exp_year']) ?>年
+  <input type="hidden" value="<?php echo h($_POST['exp_month']) ?>" name="exp_month" id="exp-month">
+  <input type="hidden" value="<?php echo h($_POST['exp_year']) ?>" name="exp_year" id="exp-year">
+  <label>セキュリティコード(CVC)</label>
+  <input type="hidden" value="<?php echo h($_POST['cvc']) ?>" name="cvc" id="cvc">
+  <?php echo h($_POST['cvc']) ?>
+  <img src="./img/card_back_32.png"> <span style="font-size: 80%">カード背面に記載されている数字の下3桁か、4桁を入力してください</span>
+  <label>カード名義人名(カードの表記の通り記入してください)</label>
+  <?php echo h($_POST['card_name'])?>
+  <input type="hidden" name="card_name" value="<?php echo h($_POST['card_name']) ?>" id="card-name" class="">
+  
+  <label>決済金額</label>
+  <?php if(isset($_GET['a'])): ?>
+    <input type="hidden" name="amount" value="<?php echo (int)($_GET['a']) ?>">
+    <?php echo number_format($_GET['a']) ?>円
+  <?php else: ?>
+    <?php echo number_format($_POST['amount']) ?>円
+    <input type="hidden" value="<?php echo h($_POST['amount']) ?>" name="amount" id="amount">
+  <?php endif; ?>
+  
+  <hr>
+  
+  <input type="submit" name="commit" value="決済" class="btn btn-success">
+  <input type="submit" name="back" value="戻る" class="btn btn-danger">
+
+<?php include(__DIR__ . '/parts/footer.html') ?>

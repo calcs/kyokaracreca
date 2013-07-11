@@ -1,0 +1,47 @@
+<?php if (!defined('APP_PATH')) exit; ?>
+<?php include(__DIR__ . '/parts/header.html') ?>
+
+  <label for="card-num">クレジットカード番号(半角数字ハイフン無し)</label>
+  <input type="text" name="card_num" id="card-num" maxlength="16" placeholder="0000000000000000" value="<?php echo isset($_POST['card_num'])?h($_POST['card_num']):'' ?>">
+  <?php if (isset($errors['card_num'])): ?><span class="error"><?php echo h($errors['card_num']) ?></span><?php endif; ?>
+  
+  <label for="card-num">クレジットカード有効期限</label>
+  <select name="exp_month" id="" class="input-mini">
+    <?php for ($i = 1; $i <= 12; $i++): ?>
+      <option value="<?php echo $i ?>"<?php echo (isset($_POST['exp_month']) && $_POST['exp_month'] == $i)?' selected="selected"':''?>><?php echo $i ?></option>
+    <?php endfor; ?>
+  </select>月
+  <select name="exp_year" id="" class="input-small">
+    <?php for ($i = date('Y'); $i <= date('Y') + 5; $i++): ?>
+      <option value="<?php echo $i; ?>"<?php echo (isset($_POST['exp_year']) && $_POST['exp_year'] == $i)?' selected="selected"':''?>><?php echo $i; ?></option>
+    <?php endfor; ?>
+  </select>年
+  <?php if (isset($errors['exp'])): ?><span class="error"><?php echo h($errors['exp']) ?></span><?php endif; ?>
+  
+  <label>セキュリティコード(CVC)</label>
+  <input type="text" name="cvc" id="" maxlength="4" class="input-mini" placeholder="000" value="<?php echo isset($_POST['cvc'])?h($_POST['cvc']):'' ?>">
+  <img src="./img/card_back_32.png"> <span style="font-size: 80%">カード背面に記載されている数字の下3桁か、4桁を入力してください</span>
+  <?php if (isset($errors['cvc'])): ?><span class="error"><?php echo h($errors['cvc']) ?></span><?php endif; ?>
+  
+  <label>カード名義人名</label>
+  <input type="text" name="card_name" id="" class="" value="<?php echo isset($_POST['card_name'])?h($_POST['card_name']):'' ?>">
+  <?php if (isset($errors['card_name'])): ?><span class="error"><?php echo h($errors['card_name']) ?></span><?php endif; ?>
+  
+  <label>決済金額</label>
+  <?php if ($config['fixed_amount']): ?>
+    <input type="hidden" name="amount" value="<?php echo $config['default_amount'] ?>">
+    <?php echo number_format($config['default_amount']) ?>円
+  <?php else: ?>
+    <?php if(isset($_GET['a'])): ?>
+      <input type="hidden" name="amount" value="<?php echo (int)($_GET['a']) ?>">
+      <?php echo number_format((int)($_GET['a'])) ?>円
+    <?php else: ?>
+      <input type="text" name="amount" value="<?php echo isset($_POST['amount'])?h($_POST['amount']):$config['default_amount'] ?>">
+    <?php endif; ?>
+    <?php if (isset($errors['amount'])): ?><span class="error"><?php echo h($errors['amount']) ?></span><?php endif; ?>
+  <?php endif; ?>
+  <hr>
+  
+  <input type="submit" name="confirm" value="確認" class="btn btn-success">
+
+<?php include(__DIR__ . '/parts/footer.html') ?>

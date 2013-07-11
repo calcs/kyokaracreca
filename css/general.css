@@ -1,0 +1,13 @@
+.error {
+	color: #aa2727;
+	display: block;
+	font-size: 90%;
+}
+
+input {
+	margin-bottom: 0 !important;
+}
+
+label {
+	margin-top: 0.5em;
+}

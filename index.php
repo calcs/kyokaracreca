@@ -25,17 +25,45 @@
       Stripe::setApiKey($config['webpay_secret_key']);
       Stripe::$apiBase = "https://api.webpay.jp";
       
-      $result = Stripe_Charge::create(array(
-         "amount" => $_POST['amount'],
-         "currency" => "jpy",
-         "card" => 
-          array("number" => $_POST['card_num'],
-           "exp_month" => $_POST['exp_month'],
-           "exp_year" => $_POST['exp_year'],
-           "cvc" => $_POST['cvc'],
-           "name" => $_POST['card_name']),
-           "description" => isset($_GET['m'])?$_GET['m']:null
-      ));
+      try{
+        $result = Stripe_Charge::create(array(
+           "amount" => $_POST['amount'],
+           "currency" => "jpy",
+           "card" => 
+            array("number" => $_POST['card_num'],
+             "exp_month" => $_POST['exp_month'],
+             "exp_year" => $_POST['exp_year'],
+             "cvc" => $_POST['cvc'],
+             "name" => $_POST['card_name']),
+             "description" => isset($_GET['m'])?$_GET['m']:null
+        ));
+      } catch (Stripe_CardError $e) {
+        $body = $e->getJsonBody();
+        $err  = $body['error']['code'];
+        $errors = array();
+        
+        if ($err == "incorrect_number") {
+          $errors['card_num'] = "カード番号が違います。";
+        } elseif ($err == "invalid_expiry_month") {
+          $errors['exp'] = "カードの有効期限月が不正です。";
+        } elseif ($err == "invalid_expiry_year") {
+          $errors['exp'] = "カードの有効期限年が不正です。";
+        } elseif($err == "invalid_cvc") {
+          $errors['cvc'] = "CVCセキュリティコードが不正です。";
+        } elseif($err == "expired_card") {
+          $errors['exp'] = "既に失効したカードです。";
+        } elseif ($err == "incorrect_cvc") {
+          $errors['cvc'] = "CVCセキュリティーコードが違います。";
+        } elseif ($err == "card_declined") {
+          $errors['amount'] = "カードが決済に失敗しました。";
+        } elseif ($err == "missing") {
+          $errors['amount'] = "請求を行った顧客にカードが紐付いていません。"; //将来的措置
+        } elseif ($err == "processing_error") {
+          $errors['amount'] = "処理中にエラーが発生しました。";
+        }
+        include 'tmpl/index.html';
+        exit;
+      }
       
       if ($config['do_notify'] === true) {
         $body = "{$config['page_title']}にて決済が有りました。\n日時: " . date('Y-m-d H:i:s') . "\n金額: {$_POST['amount']}\n\n詳しくはWebpayの管理画面で確認ください。";
@@ -135,5 +163,5 @@
     for($i = 0; $i < strlen($buf)-4; $i++) {
       $buf[$i] = '*';
     }
-    return str_replace(['-', '－'], '', $buf);
+    return str_replace(array('-', '－'), '', $buf);
   }
